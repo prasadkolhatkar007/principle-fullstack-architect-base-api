@@ -8,4 +8,10 @@ feat(setup): initialize .NET 9 Minimal API with global exception handling and he
 4. Established global error handling for system resilience.
 
 
+# Day - 26Mar2026 
+feat(web): initialize React 19 frontend with Vite and TanStack Query
 
+- Configured React 19 with TypeScript.
+- Integrated TanStack Query for modern server-state management.
+- Established API client connected to .NET 9 backend.
+- Set up directory structure for Domain-Driven Design (DDD) on the frontend.
