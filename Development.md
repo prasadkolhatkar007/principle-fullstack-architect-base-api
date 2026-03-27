@@ -15,3 +15,8 @@ feat(web): initialize React 19 frontend with Vite and TanStack Query
 2. Integrated TanStack Query for modern server-state management.
 3. Established API client connected to .NET 9 backend.
 4. Set up directory structure for Domain-Driven Design (DDD) on the frontend.
+
+# Day - 27Mar2026 
+feat(web): Integrated agent 
+
+

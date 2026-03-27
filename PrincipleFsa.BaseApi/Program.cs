@@ -1,11 +1,25 @@
 #nullable enable
 
 using Microsoft.AspNetCore.Diagnostics;
+using PrincipleFsa.BaseApi.Integration.PythonAgent;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Adds basic routing services
 builder.Services.AddRouting();
+
+builder.Services.Configure<PythonAgentOptions>(
+    builder.Configuration.GetSection(PythonAgentOptions.SectionName)
+);
+
+builder.Services.AddHttpClient<IMigrationOrchestrator, MigrationOrchestrator>((sp, httpClient) =>
+{
+    var options = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<PythonAgentOptions>>().Value;
+
+    httpClient.BaseAddress = new Uri(options.BaseUrl, UriKind.Absolute);
+    httpClient.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
+    httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+});
 
 var app = builder.Build();
 
@@ -33,6 +47,8 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
+
+
 // Root Endpoint
 app.MapGet("/", () => Results.Ok(new 
 { 
@@ -43,4 +59,19 @@ app.MapGet("/", () => Results.Ok(new
 // Health Check
 app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }));
 
+// Dev-only endpoint to quickly verify Python-agent integration
+if (app.Environment.IsDevelopment())
+{
+    app.MapPost("/debug/migration/analyze", async (
+        AnalyzeRequest request,
+        IMigrationOrchestrator orchestrator,
+        CancellationToken ct) =>
+    {
+        var result = await orchestrator.ProcessMigrationTask(request.Code, ct);
+        return Results.Ok(new { result });
+    });
+}
+
 app.Run();
+
+internal sealed record AnalyzeRequest(string Code);
