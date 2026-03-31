@@ -24,9 +24,11 @@ feat(setup): initialize .NET 9 Minimal API with global exception handling and he
 ##### Day - 2 
 feat(web): initialize React 19 frontend with Vite and TanStack Query
 
-
 ##### Day - 3 
 Python Integration
 
 ##### Day - 4 
 Secure API Bridging & Middleware
+
+##### Day - 4 
+RAG Implementation (Vector DB Search)
